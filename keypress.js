@@ -130,73 +130,109 @@ function mouseReleased() {
 }
 
 
-let upCount = -1
+const keyboardMode = {
+    isActive: false,
+    currentX: undefined,
+    currentY: undefined,
+};
 
+let pattern1IsActive = false
+let pattern2IsActive = false
+let selectPattern = false
+let pattern1=`..............OO.
+..............OO.
+........OOO......
+..........O......
+.........O.....OO
+..............O.O
+................O
+.................
+.................
+.................
+.................
+.................
+.................
+.................
+.................
+.................
+.................
+.O...............
+.OO..............
+O.O..............`
+let pattern2=`OO.O.OO
+...O...
+O.....O
+.OOOOO.
+.......
+.......
+OOO.OOO`
 
+document.querySelector('.pattern1').addEventListener('click', function(e){
+    pattern1IsActive = true
+    pattern2IsActive = false
 
-function keyPressed(){ 
-    let currentX;
-    let currentY;
-    let previousX;
-    let previousY;
     
-    function mouseMoved(){  
-        currentX = Math.floor(mouseX / unitLength);
-        currentY = Math.floor(mouseY / unitLength);
-    }
+})
 
-    // if(key === 'c' || key === 'C'){
-    //     mouseMoved();
-    //     noLoop();
-    //     currentBoard[x][y] = 1;
-    //     fill(boxColor);
-    //     stroke(strokeColor);
-    //     rect(x * unitLength, y * unitLength, unitLength, unitLength); 
-    // }
+document.querySelector('.pattern2').addEventListener('click', function(e){
+    pattern1IsActive = false
+    pattern2IsActive = true
+   
+})
 
-    mouseMoved();
 
-    if(previousX === undefined || previousY === undefined){
-       previousX = currentX
-       previousY = currentY
-    }
 
-    console.log(previousX,previousY)
 
- 
-    if(key === 'ArrowUp'){
-        //when the cursor move to another cell 
-        if(currentX != previousX ||currentY != previousY ){ 
-            upCount = 0;
-            noLoop();
-            currentY = currentY + 1
-            fill(boxColor)
-            stroke(strokeColor);
-            rect(currentX * unitLength, currentY * unitLength, unitLength, unitLength);
-            previousX = currentX
-            previousY = currentY
-        }else if(currentX === previousX && currentY === previousY){
-            upCount +=1
-            noLoop();
-            if(currentY-upCount > unitLength * rows ){
-                upCount = 0
-                alert("Exceed the board")
-            }else{
-                currentY = currentY - upCount
-                fill(boxColor)
-                stroke(strokeColor);
-                rect(currentX * unitLength, currentY * unitLength, unitLength, unitLength);
-                previousX = currentX
-                previousY = currentY
+
+function keyPressed(){
+
+    if(key === "c"|| key === 'C' ){
+        
+        if (mouseX > unitLength * columns || mouseY > unitLength * rows) {
+            return;
+        }
+
+        keyboardMode.currentX = Math.floor(mouseX / unitLength);
+        keyboardMode.currentY = Math.floor(mouseY / unitLength);
+       
+        let pattern;
+        let patternArr;
+
+        if(pattern1IsActive){
+            pattern = pattern1
+        }else if(pattern2IsActive){
+            pattern = pattern2
+        }
+
+        
+
+    
+        patternArr = pattern.split("\n")
+        for(let rowIdx = 0; rowIdx < patternArr.length; rowIdx++){
+            for(let colIdx=0; colIdx < patternArr[rowIdx].length; colIdx++){
+                let newColumn = keyboardMode.currentX + colIdx;
+                let newRow = keyboardMode.currentY + rowIdx;
+                if (patternArr[rowIdx][colIdx] === "O"){
+                    currentBoard[newColumn][newRow] = 1;
+
+                }else{
+                    currentBoard[newColumn][newRow] = 0;
+                }
+
+                if(currentBoard[newColumn][newRow] === 1){
+                    fill(boxColor);
+                }else{
+                    fill(255);
+                }
+
+                stroke(strokeColor); 
+                rect(newColumn * unitLength, newRow * unitLength, unitLength, unitLength);
             }
         }
+        return;
+    }
+
     
-    }
-
-    if(key === 'Enter' ){
-        loop();
-    }
-
 }
 
 
