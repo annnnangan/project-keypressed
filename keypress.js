@@ -186,15 +186,16 @@ document.querySelector('.pattern2').addEventListener('click', function(e){
 
 function keyPressed(){
 
-    if(key === "c"|| key === 'C' ){
-        
-        if (mouseX > unitLength * columns || mouseY > unitLength * rows) {
-            return;
-        }
+    keyboardMode.currentX = Math.floor(mouseX / unitLength);
+    keyboardMode.currentY = Math.floor(mouseY / unitLength);
 
-        keyboardMode.currentX = Math.floor(mouseX / unitLength);
-        keyboardMode.currentY = Math.floor(mouseY / unitLength);
-       
+    if (key === "Enter") {
+        loop();
+    }
+
+
+    if(key === "c"|| key === 'C' ){
+        noLoop();
         let pattern;
         let patternArr;
 
@@ -204,9 +205,8 @@ function keyPressed(){
             pattern = pattern2
         }
 
-        
+        console.log("pattern",pattern)
 
-    
         patternArr = pattern.split("\n")
         for(let rowIdx = 0; rowIdx < patternArr.length; rowIdx++){
             for(let colIdx=0; colIdx < patternArr[rowIdx].length; colIdx++){
@@ -225,14 +225,13 @@ function keyPressed(){
                     fill(255);
                 }
 
-                stroke(strokeColor); 
+                stroke(strokeColor);
                 rect(newColumn * unitLength, newRow * unitLength, unitLength, unitLength);
             }
         }
         return;
     }
 
-    
 }
 
 
